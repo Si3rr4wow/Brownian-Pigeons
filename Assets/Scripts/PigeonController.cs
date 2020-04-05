@@ -10,6 +10,7 @@ public class PigeonController : MonoBehaviour
 
   private Animator animator;
   private NavMeshAgent agent;
+  private GameObject[] targets;
   private Vector3 foodPosition;
   private Vector3 agentPosition;
   private Vector3 randomDirection;
@@ -19,11 +20,16 @@ public class PigeonController : MonoBehaviour
   {
     // ainmator = GetComponent<Animator>;
     agent = GetComponent<NavMeshAgent>();
-    foodPosition = GameObject.FindWithTag("sausage-roll").transform.position;
+    agent.Warp(new Vector3(Random.Range(-20,20), 0, Random.Range(-20,20)));
     agentPosition = agent.transform.position;
+    // foodPosition = GameObject.FindWithTag("sausage-roll").transform.position;
+    targets = Targets();
+    if(TargetsExist(targets))
+    {
+      foodPosition = ClosestTarget(targets).transform.position;
+    }
     randomDirection = new Vector3(Random.Range(-randomnessMagnitude,randomnessMagnitude), 0, Random.Range(-randomnessMagnitude,randomnessMagnitude));
     disposition = Random.Range(2,10);
-    Debug.Log(disposition);
   }
 
   // Start is called before the first frame update
@@ -35,9 +41,9 @@ public class PigeonController : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
+    if(!TargetsExist(targets)) { return; }
+
     agentPosition = agent.transform.position;
-    // Debug.Log((foodPosition - agentPosition).magnitude);
-    // Debug.Log("time" + Time.time + ((int)Time.time % 10 == 0f));
 
     if((int)Time.time % disposition == 0)
     {
@@ -45,14 +51,41 @@ public class PigeonController : MonoBehaviour
     }
 
     MoveTowards(foodPosition + randomDirection);
-    RotateTowards(foodPosition);
-
+    if(IsInFocusRangeOf(foodPosition))
+    {
+      RotateTowards(foodPosition);
+    }
   }
 
-  private bool IsInConsumptionRange(Vector3 targetPosition)
+  private GameObject[] Targets()
+  {
+    return GameObject.FindGameObjectsWithTag("sausage-roll");
+  }
+
+  private bool TargetsExist(GameObject[] targets)
+  {
+    return targets.Length != 0;
+  }
+
+  private GameObject ClosestTarget(GameObject[] targets)
+  {
+    GameObject closestTarget = targets[0];
+    float closestDistanceToAnyTarget = Vector3.Distance(agentPosition, closestTarget.transform.position);
+    foreach(GameObject possibleTarget in targets)
+    {
+      float distanceToTarget = Vector3.Distance(agentPosition, possibleTarget.transform.position);
+      if(distanceToTarget > closestDistanceToAnyTarget) { continue; }
+      closestDistanceToAnyTarget = distanceToTarget;
+      closestTarget = possibleTarget;
+  }
+
+  return closestTarget;
+}
+
+  private bool IsInFocusRangeOf(Vector3 targetPosition)
   {
     float distance = Vector3.Distance(agentPosition, targetPosition);
-    return distance < 0.5f;
+    return distance < 5f;
   }
 
   private void MoveTowards(Vector3 targetPosition)
