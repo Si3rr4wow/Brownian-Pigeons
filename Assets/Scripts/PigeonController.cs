@@ -5,15 +5,18 @@ using UnityEngine.AI;
 
 public class PigeonController : MonoBehaviour
 {
-  [Range(0,5)]
-  public float randomnessMagnitude;
+  [Range(0,50)]
+  public float targetDeviationMagnitude;
+
+  [Range(0,10)]
+  public float interestRadius;
 
   private Animator animator;
   private NavMeshAgent agent;
   private GameObject[] targets;
-  private Vector3 foodPosition;
+  private Vector3 targetPosition;
   private Vector3 agentPosition;
-  private Vector3 randomDirection;
+  private Vector3 targetDeviation;
   private int disposition;
 
   void Awake()
@@ -22,13 +25,12 @@ public class PigeonController : MonoBehaviour
     agent = GetComponent<NavMeshAgent>();
     agent.Warp(new Vector3(Random.Range(-20,20), 0, Random.Range(-20,20)));
     agentPosition = agent.transform.position;
-    // foodPosition = GameObject.FindWithTag("sausage-roll").transform.position;
     targets = Targets();
-    if(TargetsExist(targets))
+    if(TargetsExist())
     {
-      foodPosition = ClosestTarget(targets).transform.position;
+      targetPosition = ClosestTarget().transform.position;
     }
-    randomDirection = new Vector3(Random.Range(-randomnessMagnitude,randomnessMagnitude), 0, Random.Range(-randomnessMagnitude,randomnessMagnitude));
+    SetTargetDeviation();
     disposition = Random.Range(2,10);
   }
 
@@ -41,20 +43,38 @@ public class PigeonController : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    if(!TargetsExist(targets)) { return; }
+    if(!TargetsExist()) { return; }
 
+    if(distanceToClosestTarget() > interestRadius && (int)Time.time % disposition == 0)
+    {
+      targetPosition = new Vector3(Random.Range(-20,20), 0, Random.Range(-20,20));
+    }
+    else
+    {
+      targetPosition = ClosestTarget().transform.position;
+    }
+    MoveTowardsTarget(targetPosition);
+  }
+
+  private void MoveTowardsTarget(Vector3 targetPosition)
+  {
     agentPosition = agent.transform.position;
 
     if((int)Time.time % disposition == 0)
     {
-      randomDirection = new Vector3(Random.Range(-randomnessMagnitude,randomnessMagnitude), 0, Random.Range(-randomnessMagnitude,randomnessMagnitude));
+      SetTargetDeviation();
     }
 
-    MoveTowards(foodPosition + randomDirection);
-    if(IsInFocusRangeOf(foodPosition))
+    MoveTowards(targetPosition + targetDeviation);
+    if(IsInFocusRangeOf(targetPosition))
     {
-      RotateTowards(foodPosition);
+      RotateTowards(targetPosition);
     }
+  }
+
+  private void SetTargetDeviation()
+  {
+    targetDeviation = new Vector3(Random.Range(-targetDeviationMagnitude,targetDeviationMagnitude), 0, Random.Range(-targetDeviationMagnitude,targetDeviationMagnitude));
   }
 
   private GameObject[] Targets()
@@ -62,12 +82,17 @@ public class PigeonController : MonoBehaviour
     return GameObject.FindGameObjectsWithTag("sausage-roll");
   }
 
-  private bool TargetsExist(GameObject[] targets)
+  private bool TargetsExist()
   {
     return targets.Length != 0;
   }
 
-  private GameObject ClosestTarget(GameObject[] targets)
+  private float distanceToClosestTarget()
+  {
+    return Vector3.Distance(agentPosition, ClosestTarget().transform.position);
+  }
+
+  private GameObject ClosestTarget()
   {
     GameObject closestTarget = targets[0];
     float closestDistanceToAnyTarget = Vector3.Distance(agentPosition, closestTarget.transform.position);
