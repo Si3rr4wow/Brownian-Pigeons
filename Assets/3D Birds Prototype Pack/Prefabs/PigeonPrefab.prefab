@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1843149523984241726}
   - component: {fileID: 7264068726244109832}
   - component: {fileID: 4031743586839433969}
+  - component: {fileID: 856608881159413233}
+  - component: {fileID: 8088790455368743622}
   m_Layer: 0
   m_Name: PigeonPrefab
   m_TagString: Untagged
@@ -54,6 +56,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -65,6 +68,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -77,3 +81,39 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &856608881159413233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3445103506687796781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3284bb97e09edc142ab223b8fe2e7e40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetDeviationMagnitude: 1.1
+  interestRadius: 1.21
+--- !u!195 &8088790455368743622
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3445103506687796781}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.50775045
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 0.74725395
+  m_BaseOffset: 0.37362698
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

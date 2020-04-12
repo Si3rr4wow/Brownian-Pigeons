@@ -23,7 +23,6 @@ public class PigeonController : MonoBehaviour
   {
     // ainmator = GetComponent<Animator>;
     agent = GetComponent<NavMeshAgent>();
-    agent.Warp(new Vector3(Random.Range(-20,20), 0, Random.Range(-20,20)));
     agentPosition = agent.transform.position;
     targets = Targets();
     if(TargetsExist())
