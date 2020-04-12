@@ -42,10 +42,8 @@ public class PigeonController : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    if(!TargetsExist()) {
-      targets = Targets();
-      return;
-    }
+    targets = Targets();
+    if(!TargetsExist()) { return; }
 
     if(distanceToClosestTarget() > interestRadius && (int)Time.time % disposition == 0)
     {
